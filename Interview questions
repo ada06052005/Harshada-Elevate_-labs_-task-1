@@ -1,0 +1,78 @@
+Interview Questions
+1. What are the different types of missing data?
+There are three main types:
+MCAR (Missing Completely At Random): No pattern; purely random.
+MAR (Missing At Random): Related to other variables but not the missing one itself.
+MNAR (Missing Not At Random): Related to the value that’s missing.
+🔧 In this project:
+We assumed Age (median), Fare (mean), and Embarked (mode) are MAR or MCAR and used simple imputation to fill them.
+
+2. How do you handle categorical variables?
+✅ Two ways:
+Label Encoding: For binary categories (Sex: male = 0, female = 1)
+One-Hot Encoding: For non-ordinal multi-class columns (Embarked: turned into dummy variables)
+📦 You used both:
+python
+Copy
+Edit
+df['Sex'] = df['Sex'].map({'male': 0, 'female': 1})
+df = pd.get_dummies(df, columns=['Embarked'], drop_first=True)
+
+3. What is the difference between normalization and standardization?
+Normalization scales values between 0 and 1 (MinMaxScaler).
+Standardization centers data around the mean with unit variance (StandardScaler).
+📦 You used both:
+python
+Copy
+Edit
+StandardScaler() → mean = 0, std = 1  
+MinMaxScaler() → scales between 0 and 1
+
+4. How do you detect outliers?
+✅ Two ways we used:
+visualization: Using seaborn.boxplot() to visually inspect Age, Fare, SibSp, Parch.
+IQR Method: Mathematically detecting and removing values outside Q1 - 1.5IQR and Q3 + 1.5IQR.
+python
+Copy
+Edit
+IQR = Q3 - Q1
+df = df[(df[col] >= Q1 - 1.5*IQR) & (df[col] <= Q3 + 1.5*IQR)]
+
+5. Why is preprocessing important in ML?
+Because raw data is messy, inconsistent, and not model-ready. Preprocessing helps:
+Clean missing values
+Format data for modeling
+Improve accuracy and reduce bias
+Remove noise (outliers) for cleaner signal
+📦 Without your preprocessing steps, your model would have been confused by NaNs, inconsistent categories, and outliers.
+
+6. What is one-hot encoding vs label encoding?
+Label Encoding: Converts categories to numbers (0, 1, 2, …) – good for binary or ordinal data
+→ Used for Sex
+One-Hot Encoding: Converts each category into its own column (dummy variables)
+→ Used for Embarked
+python
+Copy
+Edit
+df['Sex'] = df['Sex'].map({'male': 0, 'female': 1})
+df = pd.get_dummies(df, columns=['Embarked'], drop_first=True)
+
+7. How do you handle data imbalance?
+You didn't handle it in this task, but here’s how you'd do it:
+Resampling techniques:
+Oversampling minority class (e.g., SMOTE)
+Undersampling majority clas
+Class weights in ML models
+Synthetic data generation
+➡️ In Titanic, if Survived had imbalance, you'd address it during model training.
+
+8. Can preprocessing affect model accuracy?
+YES! 100%
+Bad preprocessing = garbage in, garbage out.
+Good preprocessing = cleaner data → more accurate, stable models
+📦 In your Titanic project:
+You filled missing values (so model doesn’t crash)
+Encoded categories properly
+Scaled features to avoid model bias toward larger numbers
+Removed outliers that could skew the model
+All of that boosts accuracy, speed, and model fairness ✅
